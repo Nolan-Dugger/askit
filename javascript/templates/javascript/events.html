@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+    <script type="text/javascript">
+        // START JS code here!
+        
+        $(function(){
+            
+            // btn_test JS code
+            $("#btn_test").click(function(){
+                
+                // click btn_test event code
+                console.log("clicked me!")  
+                
+            })
+            
+            // btn_vegan JS code
+            $("#btn_vegan").click(function(){
+                
+                // click btn_vegan event code
+                $(".vegan").css('background-color', 'green')
+                
+                
+            })
+            
+            // btn_healthy JS code
+            $("#btn_healthy").click(function(){
+                
+                // write btn_healthy click event code here!
+                
+                
+                
+            })
+            
+            console.log("page load")
+        })
+        
+        // END JS code
+    </script>
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">JS events</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    
+    <h3>Restaurant menu</h3>
+    
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="kungpao" class="spicy favorite">
+                <td>Kung pao shrimp</td>
+                <td>8</td>
+            </tr>
+            <tr id="friedwings" class="appetizer">
+                <td>Fried wings (6 pc)</td>
+                <td>5</td>
+            </tr>
+            <tr id="cornsoup" class="vegan appetizer healthy organic breakfast">
+                <td>Corn soup</td>
+                <td>1</td>
+            </tr>
+            <tr id="stirfry" class="vegan spicy organic">
+                <td>Stir-fried mixed vegetables</td>
+                <td>8</td>
+            </tr>
+            <tr id="eggplant" class="vegan spicy favorite">
+                <td>Chili eggplant</td>
+                <td>9</td>
+            </tr>
+            <tr id="rancheros" class="favorite breakfast">
+                <td>Huevos rancheros</td>
+                <td>8</td>
+            </tr>
+            <tr id="grilledchicken" class="favorite">
+                <td>Grilled chicken panini</td>
+                <td>11</td>
+            </tr>
+            <tr id="mussels" class="appetizer healthy favorite">
+                <td>Steamed mussels</td>
+                <td>12</td>
+            </tr>
+            <tr id="romaine" class="healthy organic appetizer breakfast">
+                <td>Heart of romaine</td>
+                <td>8</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <button id="btn_test">Test</button>
+    <button id="btn_vegan">Vegan</button>
+    <button id="btn_healthy">Healthy</button>
+    <button id="btn_organic">Organic</button>
+    
+{% endblock %}

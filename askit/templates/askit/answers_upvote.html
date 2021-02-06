@@ -1,0 +1,41 @@
+{% load inclusion %}
+<div class="bs-docs-section">
+    <div class="page-header">
+      <div class="row">
+        <div class="col-lg-1 text-secondary" style="font-size: 2em;">
+          <input type="hidden" name="next" value="{{ next }}" />
+          {% if upvote %}
+          <a href="{% url 'askit:post_upvote' post_id=post.id %}?next=/askit/{{ post.id }}/answers"><i class="fas fa-chevron-up vote_btn"></i></a>
+          {% else %}
+          <a href="{% url 'askit:post_upvote' post_id=post.id %}?next=/askit/{{ post.id }}/answers"><i class="text-secondary fas fa-chevron-up vote_btn"></i></a>
+          {% endif %}
+          <p>{{ post.upvote_count }}</p>
+  
+        </div>
+  
+        <div class="col-lg-11">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Posted by <b>{{ post.author }}</b> {{ post.created_at|timesince }}
+                {% if post.cookie_count %} <i class="fas fa-cookie-bite text-warning"></i> x {{ post.cookie_count }}
+                {% endif %}
+              </h6>
+              <h4 class="card-title"><a class="title_link"
+                  href="{% url 'askit:answers' post_id=post.id %}">{{ post.question|capfirst }}</a></h4>
+              <p class="card-text">{{ post.body|capfirst }}</p>
+              <a href="{% url 'askit:answers' post_id=post.id %}" class="card-link">{{ post.response_count }} response{{ post.response_count|pluralize }}</a>
+              {% number_of_cookies user as cookies %}
+              {% if cookies.cookies >= 1 and cookies.author != post.author %}
+              <a href="{% url 'askit:post_cookie' post_id=post.id %}?next=/askit/{{ post.id }}/answers" class="card-link" onclick="return confirm('Give a cookie?')">Give cookie</a>
+              {% endif %}
+              
+              {% if request.user == post.author %}
+                <a href="{% url 'askit:post_delete' %}?next=/askit/{{ post.id }}/answers" class="card-link"
+                    onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

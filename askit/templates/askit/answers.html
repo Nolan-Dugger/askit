@@ -1,0 +1,125 @@
+{% extends 'askit_base.html' %}
+{% block title %}
+<title>Askit: Response></title>
+{% endblock %}
+{% block body %}
+{% load inclusion %}
+{% if user.is_authenticated %}
+{% answers_upvote user user_post %}
+{% else %}
+{% include "askit/answer_page.html" %}
+{% endif %}
+
+<br>
+<br>
+<br>
+{% if user.is_authenticated %}
+<div class="page-header">
+    <div class="row">
+        <div class="col-lg-11 offset-lg-1">
+            <input type="hidden" name="next" value="{{ next }}" />
+            <form action="{% url 'askit:response' post_id=user_post.id %}?next=/askit/{{ user_post.id }}/answers"
+                method="post">
+                {% csrf_token %}
+                <!-- <input type='hidden' name='csrfmiddlewaretoken' value='Hf6l2dKvOIwqquFGX25cekwW2b8YMAJlYd2iPRI9bRpabZpQsSYaCrtTgnH3LyHT'/> -->
+                <div class="form-group">
+                    <!-- <label for="exampleTextarea">Example textarea</label> -->
+                    <textarea class="form-control" id="exampleTextarea" name="body" rows="3"
+                        placeholder="What are your thoughts?"></textarea>
+                </div>
+
+                <div class="form-group float-right">
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                </div>
+            </form>
+
+
+        </div>
+
+    </div>
+</div>
+
+<br>
+{% endif %}
+<hr class="solid">
+{% for response in user_response %}
+<div class="bs-docs-section">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-1 text-secondary" style="font-size: 1em;">
+                <input type="hidden" name="next" value="{{ next }}" />
+                {% if user.is_authenticated %}
+                {% response_upvote user response.id as upvote %}
+                {% if upvote %}
+                <a href="{% url 'askit:response_upvote' post_id=user_post.id response_id=response.id %}?next=/askit/{{ user_post.id }}/answers"><i
+                        class="fas fa-chevron-up vote_btn"></i></a>
+                {% else %}
+                
+                <a href="{% url 'askit:response_upvote' post_id=user_post.id response_id=response.id %}?next=/askit/{{ user_post.id }}/answers"><i
+                        class="text-secondary fas fa-chevron-up vote_btn"></i></a>
+                {% endif %}
+                {% else %}
+                <a role="button" data-toggle="modal" data-target="#modalLoginForm"><i
+                        class="fas fa-chevron-up vote_btn"></i></a>
+                {% endif %}
+                <p>{{ response.upvote_count }}</p>
+
+            </div>
+            <div class="col-lg-11">
+
+                <h6 class="card-subtitle mb-2 text-muted">Posted by <b>{{ response.author }}</b>
+                    {{ response.created_at|timesince }}
+                    {% if response.cookie_count %} <i class="fas fa-cookie-bite text-warning"></i> x {{ response.cookie_count }}
+                    {% endif %}
+                </h6>
+                <p>{{ response.body }}</p>
+                
+                {% if request.user == response.author %}
+                <a href="{% url 'askit:response_delete' response_id=response.id %}?next=/askit/{{ user_post.id }}/answers" class="card-link"
+                    onclick="return confirm('Are you sure you want to delete this response?')">Delete</a>
+                {% endif %}
+                
+                {% number_of_cookies user as cookies %}
+              {% if cookies.cookies >= 1 and cookies.author != response.author %}
+              <a href="{% url 'askit:response_cookie' response_id=response.id %}?next=/askit/{{ user_post.id }}/answers" class="card-link" onclick="return confirm('Give a cookie?')">Give cookie</a>
+              {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<br>
+<br>
+<footer id="footer">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <ul class="list-unstyled">
+                <li class="float-lg-right"><a href="#top">Back to top</a></li>
+            </ul>
+        </div>
+        <div class="col-lg-12 offset-lg-1">
+            <p>Made by <a href="#">Nolan Dugger</a></p>
+        </div>
+    </div>
+</footer>
+
+{% if user.is_anonymous %}
+<div class="page-header">
+    <div class="row">
+        <div class="col-lg-11 offset-lg-1">
+            <div class="alert alert-dismissible alert-primary">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Oh snap!</strong> You need to <a href="#" class="alert-link" role="button" data-toggle="modal"
+                    data-target="#modalLoginForm">
+                    <b>log in</b></a> or
+                <a href="#" class="alert-link" role="button" data-toggle="modal"
+                    data-target="#modalRegisterForm"><b>sign
+                        up</b></a> before commenting.
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'askit_base.html' %}
+{% load inclusion %}
+
+{% block title %}
+
+<title> Ask it! </title>
+
+{% endblock %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+<div class="bs-docs-section">
+  <div class="page-header">
+    <div class="row">
+      <div class="col-lg-2 offset-md-10">
+        <form action="/askit_new_post" method="post" class="form-inline my-2 my-lg-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary"
+            style="border-color:#4169E1;background-color:#4169E1;font-size:13px;">+ New Question</button>
+            
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+
+
+{% comment %}
+{% if empty_search %}
+<div class="container">
+  <div class="row">
+    <div class="card-body mt-2 mb-2">
+      <h2 class="card-title">No Search Query Given</h2>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+  {% for post in all_posts %}
+
+    {% empty %}
+    No Results Found.
+  {% endfor %}
+{% endcomment %}
+
+{% if all_posts is None %}
+<div class="container">
+  <div class="row">
+    <div class="card-body mt-2 mb-2">
+      <h2 class="card-title">No Search Query Given</h2>
+    </div>
+  </div>
+</div>
+
+{% elif all_posts %}
+  
+  {% for post in all_posts %}
+
+  {% endfor %}
+
+{% comment %}
+{% elif empty_search is None %}
+<div class="container">
+  <div class="row">
+    <div class="card-body mt-2 mb-2">
+      <h2 class="card-title">No Search Query Given</h2>
+    </div>
+  </div>
+</div>
+{% endcomment %}
+
+{% else %}
+<div class="container">
+  <div class="row">
+    <div class="card-body mt-2 mb-2">
+      <h2 class="card-title">No Results</h2>
+      <p class="card-text">There were no results matching your search: "{{query}}".</p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+  {% if user.is_authenticated %}
+    
+    {% for post in all_posts %}
+
+      {% upvote_color user post %}
+
+    {% endfor %}
+
+  {% else %}
+
+    {% include "askit/upvote_page.html" %}
+
+  {% endif %}
+
+<br>
+<br>
+  
+  <div class="col-lg-2 offset-md-4">
+    <ul class="pagination pagination-lg">
+
+{% if query %}
+
+{% if all_posts.has_previous %}
+
+  <li class="page-item active">
+  <strong><a class="page-link" href="?q={{ query }}&page={{ all_posts.previous_page_number }}"> < </a></strong>
+  </li>
+
+  {% endif %}
+
+
+
+  {% for num in all_posts.paginator.page_range %}
+    
+    {% if all_posts.number == num %}
+    
+    <li class="page-item active">
+      <strong><a class="page-link" href="?q={{ query }}&page={{ num }}">{{ num }}</a></strong>
+    </li>
+    
+    {% elif num > all_posts.number|add:'-3' and num < all_posts.number|add:'3' %}
+
+    <li class="page-item">
+      <strong><a class="page-link" href="?q={{ query }}&page={{ num }}" style="color:#4285f4">{{ num }}</a></strong>
+    </li>
+    
+    {% endif %}
+    
+  {% endfor %}
+
+  {% if all_posts.has_next %}
+    
+    <li class="page-item active">
+    <strong><a class="page-link" href="?q={{ query }}&page={{ all_posts.next_page_number }}"> > </a></strong>
+    </li>
+
+  {% endif %}
+
+{% else %}
+
+{% if most_popular %}
+
+
+
+  {% if all_posts.has_previous %}
+
+  <li class="page-item active">
+  <strong><a class="page-link" href="?sort=most_popular&page={{ all_posts.previous_page_number }}"> < </a></strong>
+  </li>
+
+  {% endif %}
+
+
+
+  {% for num in all_posts.paginator.page_range %}
+    
+    {% if all_posts.number == num %}
+    
+    <li class="page-item active">
+      <strong><a class="page-link" href="?sort=most_popular&page={{ num }}">{{ num }}</a></strong>
+    </li>
+    
+    {% elif num > all_posts.number|add:'-3' and num < all_posts.number|add:'3' %}
+
+    <li class="page-item">
+      <strong><a class="page-link" href="?sort=most_popular&page={{ num }}" style="color:#4285f4">{{ num }}</a></strong>
+    </li>
+    
+    {% endif %}
+    
+  {% endfor %}
+
+  {% if all_posts.has_next %}
+    
+    <li class="page-item active">
+    <strong><a class="page-link" href="?sort=most_popular&page={{ all_posts.next_page_number }}"> > </a></strong>
+    </li>
+
+  {% endif %}
+
+{% else %}
+
+  {% if all_posts.has_previous %}
+
+  <li class="page-item active">
+  <strong><a class="page-link" href="?page={{ all_posts.previous_page_number }}"> < </a></strong>
+  </li>
+
+  {% endif %}
+
+{% for num in all_posts.paginator.page_range %}
+    
+    {% if all_posts.number == num %}
+    
+    <li class="page-item active">
+      <strong><a class="page-link" href="?page={{ num }}">{{ num }}</a></strong>
+    </li>
+    
+    {% elif num > all_posts.number|add:'-3' and num < all_posts.number|add:'3' %}
+
+    <li class="page-item">
+      <strong><a class="page-link" href="?page={{ num }}" style="color:#4285f4">{{ num }}</a></strong>
+    </li>
+    
+    {% endif %}
+    
+  {% endfor %}
+
+  {% if all_posts.has_next %}
+    
+    <li class="page-item active">
+    <strong><a class="page-link" href="?page={{ all_posts.next_page_number }}"> > </a></strong>
+    </li>
+
+  {% endif %}
+
+{% endif %}
+{% endif %}
+    </ul>
+  </div>
+
+
+  {% endblock %}

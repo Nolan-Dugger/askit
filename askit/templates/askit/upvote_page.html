@@ -1,0 +1,37 @@
+{% load inclusion %}
+{% for post in all_posts %}
+<div class="bs-docs-section">
+  <div class="page-header">
+    <div class="row">
+      <div class="col-lg-1 text-secondary" style="font-size: 2em;">
+        <a role="button" data-toggle="modal"
+        data-target="#modalLoginForm"><i class="fas fa-chevron-up vote_btn"></i></a>
+        <p>{{ post.upvote_count }}</p>
+      </div>
+
+      <div class="col-lg-11">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Posted by <b>{{ post.author }}</b> {{ post.created_at|timesince }}
+              {% if post.cookie_count %} <i class="fas fa-cookie-bite text-warning"></i> x {{ post.cookie_count }}
+              {% endif %}
+            </h6>
+            <h4 class="card-title"><a class="title_link"
+                href="{% url 'askit:answers' post_id=post.id %}">{{ post.question|capfirst }}</a></h4>
+            <p class="card-text">{{ post.body|capfirst|truncatechars:100 }}</p>
+            <a href="{% url 'askit:answers' post_id=post.id %}" class="card-link">{{ post.response_count }} response{{ post.response_count|pluralize }}</a>
+            &nbsp
+            &nbsp
+            <a role="button" data-toggle="modal"
+        data-target="#modalLoginForm" style="color:#4285f4">Give Cookie</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% if request.user == post.author %}
+                <a href="{% url 'askit:post_delete' post_id=post.id %}?next={% url 'askit:askit_home' %}" class="card-link"
+                    onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+              {% endif %}
+{% endfor %}

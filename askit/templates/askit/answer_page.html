@@ -1,0 +1,28 @@
+<div class="bs-docs-section">
+  <div class="page-header">
+    <div class="row">
+      <div class="col-lg-1 text-secondary" style="font-size: 2em;">
+        <input type="hidden" name="next" value="{{ next }}" />
+        <a role="button" data-toggle="modal"
+        data-target="#modalLoginForm" href="{% url 'askit:askit_login' %}?next=/askit/{{ user_post.id }}/answers"><i class="text-secondary fas fa-chevron-up vote_btn"></i></a>
+        <p>{{ user_post.upvote_count }}</p>
+
+      </div>
+
+      <div class="col-lg-11">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Posted by <b>{{ user_post.author }}</b> {{ user_post.created_at|timesince }}
+            </h6>
+            <h4 class="card-title"><a class="title_link"
+                href="{% url 'askit:answers' post_id=user_post.id %}">{{ user_post.question|capfirst }}</a></h4>
+            <p class="card-text">{{ user_post.body|capfirst }}</p>
+            <a href="{% url 'askit:answers' post_id=user_post.id %}" class="card-link">{{ user_post.response_count }} response{{ user_post.response_count|pluralize }}</a>
+            <a href="#" class="card-link" onclick="return confirm('Give a cookie?')">Give cookie</a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

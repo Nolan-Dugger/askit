@@ -1,0 +1,182 @@
+{% load static %}
+{% load inclusion %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  {% block title %} {% endblock %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+  <!-- Bootstrap core CSS -->
+  <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="{% static "css/mdb.min.css" %}" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="/static/css/united.bootstrap.css"> -->
+  <link href="{% static "css/custom.min.css" %}" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/askit">Ask it!</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item {{latest_post}}">
+            <a class="nav-link" href="/askit">LATEST<span class="sr-only">(current)</span></a>
+          </li>
+
+          <li class="nav-item {{most_popular}}">
+            <a class="nav-link" href="/askit?sort=most_popular">MOST POPULAR</a>
+          </li>
+
+
+
+
+
+
+
+
+
+
+          
+          {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="download">YOUR ACCOUNT<span
+                class="caret"></span></a>
+            <div class="dropdown-menu" aria-labelledby="download">
+              <a class="dropdown-item" href="{% url 'askit:change_password' %}">CHANGE PASSWORD</a>
+              <a class="dropdown-item" href="{% url 'askit:askit_logout' %}">LOGOUT</a>
+              {% number_of_cookies user as cookies %}
+              {% if cookies.cookies >= 1 %}
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item">COOKIE JAR: <i class="fas fa-cookie-bite text-warning"></i> x {{ cookies.cookies }} </a>
+            </div>
+            {% endif %}
+          </li>
+          {% else %}
+
+
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">YOUR ACCOUNT</a>
+            <div class="dropdown-menu">
+              <a href="#" class="dropdown-item" role="button" data-toggle="modal"
+                data-target="#modalLoginForm">LOGIN</a>
+                <a href="#" class="dropdown-item" role="button" data-toggle="modal"
+                data-target="#modalRegisterForm">SIGN UP</a>
+            </div>
+          </li>
+
+          {% endif %}
+        </ul>
+        <form class="form-inline my-2 my-lg-0" method="GET" action='/askit'>
+          <input class="form-control mr-sm-2" type="text" name="q" placeholder="Search...">
+          <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Login Modal -->
+
+  <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-label="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100 font-weight-bold">Sign in</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <form action="{% url 'askit:askit_login' %}?next={{request.path}}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{next}}" />
+          <div class="modal-body mx-3">
+            <div class="md-form mb-5">
+              <i class="fas fa-envelope prefix grey-text"></i>
+              <input type="email" id="defaultForm-email" class="form-control validate" name='username' required>
+              <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+            </div>
+
+            <div class="md-form mb-4">
+              <i class="fas fa-lock prefix grey-text"></i>
+              <input type="password" id="defaultForm-pass" class="form-control validate" name='password' required>
+              <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+            </div>
+
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="submit" class="btn btn-deep-orange">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign Up Modal-->
+
+  <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-label="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100 font-weight-bold">Sign up</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <form action="/askit_register" method="post">
+          {% csrf_token %}
+          <div class="modal-body mx-3">
+            <div class="md-form mb-5">
+              <i class="fas fa-envelope prefix grey-text"></i>
+              <input type="email" id="orangeForm-email" class="form-control validate" name='username' required>
+              <label data-error="wrong" data-success="right" for="orangeForm-email">Your email</label>
+            </div>
+
+            <div class="md-form mb-4">
+              <i class="fas fa-lock prefix grey-text"></i>
+              <input type="password" id="orangeForm-pass" class="form-control validate" name='password' required>
+              <label data-error="wrong" data-success="right" for="orangeForm-pass">Your password</label>
+            </div>
+
+          </div>
+
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="submit" class="btn btn-deep-orange">Sign up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    {% block body %} {% endblock %}
+
+
+  </div>
+
+
+
+  <script src="{% static "js/dist.jquery.min.js" %}"></script>
+  <script src="{% static "js/dist.popper.min.js" %}"></script>
+  <script src="{% static "js/dist.bootstrap.min.js" %}"></script>
+  <script src="{% static "js/assets.custom.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/popper.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/mdb.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "js/datatables.min.js" %}"></script>
+</body>
+
+</html>
